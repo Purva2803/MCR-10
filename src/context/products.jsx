@@ -6,8 +6,6 @@ export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
 
-    const { department } = useParams()
-
 
      const [products, setProducts] = useState(inventoryData)
 
