@@ -1,6 +1,9 @@
 import { useContext, useState } from "react";
 import { ProductContext } from "../context/products";
-;
+import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import './../styles/addProduct.css'
 
 const storeProductToLocalstorage = (product) => {
   const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
@@ -9,6 +12,7 @@ const storeProductToLocalstorage = (product) => {
 };
 
 export const AddProduct = () => {
+    const navigate = useNavigate();
   const [product, setProduct] = useState({
     department: 'kitchen',
     name: '',
@@ -28,6 +32,7 @@ export const AddProduct = () => {
     storeProductToLocalstorage(productWithId);
     setProduct(productWithId);
     console.log(productWithId);
+    navigate('/products');
   };
 
   const idCount = (() => {

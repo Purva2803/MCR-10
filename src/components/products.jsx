@@ -4,19 +4,19 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
+
 export const Products = () => {
   const { department } = useParams();
-  const storedProducts =
-    JSON.parse(localStorage.getItem("products")) || inventoryData;
+  const storedProducts = JSON.parse(localStorage.getItem('products')) || inventoryData;
 
   const [products, setProducts] = useState(storedProducts);
 
   useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem('products', JSON.stringify(products));
   }, [products]);
 
   const filterProducts = (selectedDepartment) => {
-    if (selectedDepartment === "all") {
+    if (selectedDepartment === 'all') {
       setProducts(storedProducts);
     } else {
       const filteredProducts = storedProducts.filter(
@@ -32,18 +32,52 @@ export const Products = () => {
     }
   }, [department]);
 
+  const categoryChange = (sortBy) => {
+    let sortedProducts = [];
+
+    if (sortBy === 'price') {
+      sortedProducts = [...products].sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'name') {
+      sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'stock') {
+      sortedProducts = [...products].sort((a, b) => a.stock - b.stock);
+    }
+
+    setProducts(sortedProducts);
+  };
+
+  const showLowStock = () => {
+    const lowStock = products.filter((product) => product.stock <= 10);
+    setProducts(lowStock);
+  };
+
   return (
     <>
       <div>
         <h1>Products</h1>
-        <NavLink to="/addProduct" activeClassName="active">
-          Add Product
-        </NavLink>
-        <select onChange={(e) => filterProducts(e.target.value)}>
-          <option value="Kitchen">Kitchen</option>
-          <option value="Toys">Toys</option>
-          <option value="Clothing">Clothing</option>
-          <option value="all">All Departments</option>
+        <div>
+          <NavLink to="/addProduct" activeClassName="active">
+            Add Product
+          </NavLink>
+        </div>
+        <div>
+          <select onChange={(e) => filterProducts(e.target.value)}>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Toys">Toys</option>
+            <option value="Clothing">Clothing</option>
+            <option value="all">All Departments</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <input type="checkbox" id="stock" name="stock" value="stock" onChange={showLowStock} />
+        <label htmlFor="stock">Low stock Items</label>
+      </div>
+      <div>
+        <select onChange={(e) => categoryChange(e.target.value)}>
+          <option value="price">Price</option>
+          <option value="name">Name</option>
+          <option value="stock">Stock</option>
         </select>
       </div>
       <div>
@@ -82,6 +116,7 @@ export const Products = () => {
     </>
   );
 };
+
 
 {
   /* id: 10,
